@@ -151,6 +151,7 @@ class SmartRefresher extends StatefulWidget {
 
   /// This bool will affect whether or not to have the function of drop-down refresh.
   final bool enablePullDown;
+  final bool headerAtBottom;
 
   /// callback when header refresh
   ///
@@ -226,7 +227,8 @@ class SmartRefresher extends StatefulWidget {
       this.reverse,
       this.physics,
       this.scrollDirection,
-      this.scrollController})
+      this.scrollController,
+      this.headerAtBottom: false})
       : builder = null,
         super(key: key);
 
@@ -244,6 +246,7 @@ class SmartRefresher extends StatefulWidget {
     this.enablePullDown: true,
     this.enablePullUp: false,
     this.enableTwoLevel: false,
+    this.headerAtBottom: false,
     this.onRefresh,
     this.onLoading,
     this.onTwoLevel,
@@ -312,16 +315,24 @@ class SmartRefresherState extends State<SmartRefresher> {
       ];
     }
     if (widget.enablePullDown || widget.enableTwoLevel) {
-      slivers?.insert(
-          0,
-          widget.header ??
-              (configuration?.headerBuilder != null
-                  ? configuration?.headerBuilder!()
-                  : null) ??
-              defaultHeader);
+      if (widget.headerAtBottom) {
+        slivers?.add(widget.header ??
+            (configuration?.headerBuilder != null
+                ? configuration?.headerBuilder!()
+                : null) ??
+            defaultHeader);
+      } else {
+        slivers?.insert(
+            0,
+            widget.header ??
+                (configuration?.headerBuilder != null
+                    ? configuration?.headerBuilder!()
+                    : null) ??
+                defaultHeader);
+      }
     }
     //insert header or footer
-    if (widget.enablePullUp) {
+    if (widget.enablePullUp && !widget.headerAtBottom) {
       slivers?.add(widget.footer ??
           (configuration?.footerBuilder != null
               ? configuration?.footerBuilder!()
