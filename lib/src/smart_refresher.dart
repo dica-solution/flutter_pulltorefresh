@@ -446,7 +446,7 @@ class SmartRefresherState extends State<SmartRefresher> {
         viewportBuilder: (context, offset) {
           Viewport viewport =
               childView.viewportBuilder(context, offset) as Viewport;
-          if (widget.enablePullDown) {
+          if (widget.enablePullDown && !widget.headerAtBottom) {
             viewport.children.insert(
                 0,
                 widget.header ??
@@ -454,6 +454,11 @@ class SmartRefresherState extends State<SmartRefresher> {
                         ? conf?.headerBuilder!()
                         : null) ??
                     defaultHeader);
+          }
+          if (widget.enablePullDown && widget.headerAtBottom) {
+            viewport.children.add(widget.header ??
+                (conf?.headerBuilder != null ? conf?.headerBuilder!() : null) ??
+                defaultHeader);
           }
           //insert header or footer
           if (widget.enablePullUp) {
